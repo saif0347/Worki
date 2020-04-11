@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">Worki</string>
+    <string name="title_activity_admin_login">AdminLogin</string>
+    <string name="home">Home</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="admin">Admin</string>
+    <string name="no_messages">No Messages</string>
+    <string name="profile">Profile</string>
+    <string name="my_profile">My Profile</string>
+    <string name="update_profile">Update Profile</string>
+    <string name="browse">Browse</string>
+    <string name="name">Name:</string>
+    <string name="no_users">No Users</string>
+    <string name="send_message">Send Message</string>
+    <string name="select_user">Select User</string>
+    <string name="select_message">Select Message</string>
+    <string name="url_optional">Url (optional)</string>
+    <string name="enter_message">Enter Message</string>
+    <string name="lat">Latitude</string>
+    <string name="lng">Longitude</string>
+    <string name="update">Update Location</string>
+    <string name="rad">Radius (meters)</string>
+    <string name="settings">Settings</string>
+    <string name="user_profile">User Profile</string>
+    <string name="add_note">Add Note</string>
+    <string name="status">Status</string>
+    <string name="messages">Messages</string>
+    <string name="notes">Notes</string>
+</resources>
