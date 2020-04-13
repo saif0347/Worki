@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import com.app.worki.R;
 import com.app.worki.model.MessageModel;
+import com.app.worki.util.IntentUtil;
+import com.app.worki.util.Utils;
 
 import java.util.ArrayList;
 
@@ -57,6 +59,30 @@ public class MessagesAdapter extends BaseAdapter {
         MessageModel model = mList.get(position);
 
         // set views data here
+        viewHolder.title.setText(model.getTitle());
+        if(model.getMsg().length() < 100){
+            viewHolder.message.setText(model.getMsg());
+        }
+        else{
+            viewHolder.message.setText(model.getMsg().substring(0, 100)+"...");
+        }
+
+        if(model.getUrl().isEmpty()){
+            viewHolder.url.setVisibility(View.GONE);
+        }
+        else{
+            viewHolder.url.setVisibility(View.VISIBLE);
+            viewHolder.url.setText(model.getUrl());
+            viewHolder.url.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Utils.clickEffect(v);
+                    if(!model.getUrl().isEmpty())
+                        IntentUtil.openUrlInBrowser(mContext, model.getUrl());
+                }
+            });
+        }
+        viewHolder.time.setText(Utils.getTimeAgo((System.currentTimeMillis() - Long.parseLong(model.getTime()))/1000));
 
         return v;
     }

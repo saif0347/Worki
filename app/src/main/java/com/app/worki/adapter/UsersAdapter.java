@@ -1,5 +1,6 @@
 package com.app.worki.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import com.app.worki.R;
 import com.app.worki.model.UserModel;
+import com.app.worki.util.FirebaseStorageUtil;
 
 import java.util.ArrayList;
 
@@ -58,7 +60,25 @@ public class UsersAdapter extends BaseAdapter {
         UserModel model = mList.get(position);
 
         // set views data here
-
+        viewHolder.name.setText(model.getUsername());
+        if(model.getStatus() == 1){
+            viewHolder.status.setText(mContext.getResources().getString(R.string.active));
+            viewHolder.status.setTextColor(mContext.getResources().getColor(R.color.green));
+        }
+        else{
+            viewHolder.status.setText(mContext.getResources().getString(R.string.inactive));
+            viewHolder.status.setTextColor(mContext.getResources().getColor(R.color.red));
+        }
+        if(!model.getPhoto().isEmpty()) {
+            FirebaseStorageUtil.showImage((
+                    Activity) mContext,
+                    viewHolder.photo,
+                    FirebaseStorageUtil.getStorageReference(new String[]{model.getUsername(), model.getPhoto()})
+            );
+        }
+        else{
+            viewHolder.photo.setImageBitmap(null);
+        }
         return v;
     }
 

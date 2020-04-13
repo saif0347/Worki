@@ -17,8 +17,8 @@
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/photo"
             android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:src="@drawable/profile"/>
+            android:background="@drawable/profile"
+            android:layout_height="150dp"/>
         <Button
             android:id="@+id/browse"
             android:layout_width="100dp"
@@ -53,7 +53,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Saifal Nadeem" />
+                android:text="@string/loading" />
         </LinearLayout>
         <Button
             android:id="@+id/update"
@@ -70,4 +70,10 @@
             android:background="@color/colorPrimary"
             android:textColor="@android:color/white"/>
     </LinearLayout>
+    <ProgressBar
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_centerInParent="true"/>
 </RelativeLayout>

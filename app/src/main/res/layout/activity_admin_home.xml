@@ -29,15 +29,27 @@
                     android:textSize="22sp"
                     android:textColor="@color/white"
                     android:layout_centerVertical="true"/>
-                <ImageView
-                    android:id="@+id/settings"
-                    android:layout_centerVertical="true"
+                <LinearLayout
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:padding="3dp"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/gear_white" />
+                    android:layout_centerVertical="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/settings"
+                        android:padding="4dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/gear_white" />
+                    <ImageView
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginStart="12dp"
+                        android:id="@+id/logout"
+                        android:padding="4dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/logout" />
+                </LinearLayout>
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
 

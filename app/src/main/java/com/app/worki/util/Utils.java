@@ -46,6 +46,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 
 import android.text.InputType;
 import android.widget.AbsListView;
@@ -62,6 +63,14 @@ public class Utils {
     @NonNull
     public static String txt(EditText editText){
         return editText.getText().toString();
+    }
+
+    public static String getPhotoName(){
+        return (10000 + new Random().nextInt(10000) - new Random().nextInt(10000)) + ".png";
+    }
+
+    public static String getRandomNumber(){
+        return (1000000 + new Random().nextInt(1000000) - new Random().nextInt(1000000))+"";
     }
 
     @NonNull
@@ -439,6 +448,26 @@ public class Utils {
             return view.getChildAt(index);
         } else {
             return null;
+        }
+    }
+
+    public static String getTimeAgo(long seconds) {
+        if(seconds < 0){
+            return "0s ago";
+        } else if (seconds < 60) {
+            return seconds + "s ago";
+        } else if (seconds < 3600) {
+            return "" + (seconds / 60) + "m ago";
+        } else if (seconds < 86400) {
+            return "" + (seconds / 3600) + "h ago";
+        } else if (seconds < 604800) {
+            return "" + (seconds / 86400) + "d ago";
+        } else if (seconds < 2419200){
+            return "" + (seconds / 604800) + "w ago";
+        } else if(seconds < 29030400){
+            return "" + (seconds / 2419200) + "M ago";
+        } else {
+            return "" + (seconds / 29030400) + "Y ago";
         }
     }
 }

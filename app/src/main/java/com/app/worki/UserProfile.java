@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,7 +14,13 @@ import com.app.worki.adapter.MessagesAdapter;
 import com.app.worki.adapter.NotesAdapter;
 import com.app.worki.model.MessageModel;
 import com.app.worki.model.NoteModel;
+import com.app.worki.model.UserModel;
+import com.app.worki.util.FirebaseStorageUtil;
+import com.app.worki.util.FirestoreUtil;
+import com.app.worki.util.PrefsUtil;
 import com.app.worki.util.Utils;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -43,6 +50,10 @@ public class UserProfile extends AppCompatActivity {
     Button messages;
     @BindView(R.id.notes)
     Button notes;
+    UserModel userModel;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+    int selection = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,32 +61,41 @@ public class UserProfile extends AppCompatActivity {
         setContentView(R.layout.activity_user_profile);
         ButterKnife.bind(this);
 
-        messages.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setSelection(0);
-            }
-        });
-        sendMsg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Utils.clickEffect(v);
-                Intent sendMessage = new Intent(UserProfile.this, SendMessage.class);
-                startActivity(sendMessage);
-            }
-        });
-        notes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setSelection(1);
-            }
-        });
+        userModel = (UserModel) getIntent().getSerializableExtra("model");
 
-        setSelection(0);
+        messages.setOnClickListener(v -> setSelection(0));
+        notes.setOnClickListener(v -> setSelection(1));
+        sendMsg.setOnClickListener(v -> {
+            Utils.clickEffect(v);
+            Intent sendMessage = new Intent(UserProfile.this, SendMessage.class);
+            sendMessage.putExtra("model", userModel);
+            startActivity(sendMessage);
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadData();
+        setSelection(selection);
+    }
+
+    public void loadData() {
+        name.setText(userModel.getUsername());
+        if (userModel.getStatus() == 1) {
+            status.setText(getResources().getString(R.string.active));
+            status.setTextColor(getResources().getColor(R.color.green));
+        } else {
+            status.setText(getResources().getString(R.string.inactive));
+            status.setTextColor(getResources().getColor(R.color.red));
+        }
+        if (!userModel.getPhoto().isEmpty())
+            FirebaseStorageUtil.showImage(this, photo, FirebaseStorageUtil.getStorageReference(new String[]{userModel.getUsername(), userModel.getPhoto()}));
     }
 
     private void setSelection(int position) {
-        if(position == 0){
+        selection = position;
+        if (position == 0) {
             messages.setBackground(getResources().getDrawable(R.drawable.btn_sel));
             messages.setTextColor(getResources().getColor(R.color.white));
             notes.setBackground(getResources().getDrawable(R.drawable.btn_unsel));
@@ -83,8 +103,7 @@ public class UserProfile extends AppCompatActivity {
             sendMsg.setVisibility(View.VISIBLE);
             addNote.setVisibility(View.GONE);
             loadMessages();
-        }
-        else{
+        } else {
             messages.setBackground(getResources().getDrawable(R.drawable.btn_unsel));
             messages.setTextColor(getResources().getColor(R.color.colorPrimary));
             notes.setBackground(getResources().getDrawable(R.drawable.btn_sel));
@@ -95,40 +114,60 @@ public class UserProfile extends AppCompatActivity {
         }
     }
 
-    private void loadNotes() {
-        fillDummyNotes();
-        notesAdapter = new NotesAdapter(this, notesModels);
-        listView.setAdapter(notesAdapter);
-    }
-
     private void loadMessages() {
-        fillDummyMessages();
-        messagesAdapter = new MessagesAdapter(this, messageModels);
-        listView.setAdapter(messagesAdapter);
+        progressBar.setVisibility(View.VISIBLE);
+        if(messagesAdapter != null)
+            listView.setAdapter(messagesAdapter);
+        FirestoreUtil.getDocsFilteredDesc(FirestoreUtil.messages, "username", userModel.getUsername(), "time", new FirestoreUtil.LoadResultDocs() {
+            @Override
+            public void success(QuerySnapshot querySnapshot) {
+                progressBar.setVisibility(View.GONE);
+                messageModels.clear();
+                for (QueryDocumentSnapshot snapshot : querySnapshot) {
+                    MessageModel model = snapshot.toObject(MessageModel.class);
+                    messageModels.add(model);
+                }
+                messagesAdapter = new MessagesAdapter(UserProfile.this, messageModels);
+                listView.setAdapter(messagesAdapter);
+            }
+
+            @Override
+            public void error(String error) {
+                progressBar.setVisibility(View.GONE);
+            }
+        });
     }
 
-    private void fillDummyMessages() {
-        messageModels.add(new MessageModel());
-        messageModels.add(new MessageModel());
-        messageModels.add(new MessageModel());
-        messageModels.add(new MessageModel());
-        messageModels.add(new MessageModel());
-        messageModels.add(new MessageModel());
-    }
+    public void loadNotes() {
+        progressBar.setVisibility(View.VISIBLE);
+        if(notesAdapter != null)
+            listView.setAdapter(notesAdapter);
+        FirestoreUtil.getDocsFilteredDesc(FirestoreUtil.notes, "username", userModel.getUsername(), "time", new FirestoreUtil.LoadResultDocs() {
+            @Override
+            public void success(QuerySnapshot querySnapshot) {
+                progressBar.setVisibility(View.GONE);
+                notesModels.clear();
+                for (QueryDocumentSnapshot snapshot : querySnapshot) {
+                    NoteModel model = snapshot.toObject(NoteModel.class);
+                    notesModels.add(model);
+                }
+                notesAdapter = new NotesAdapter(UserProfile.this, notesModels);
+                listView.setAdapter(notesAdapter);
+            }
 
+            @Override
+            public void error(String error) {
+                progressBar.setVisibility(View.GONE);
+            }
+        });
 
-    private void fillDummyNotes() {
-        notesModels.add(new NoteModel());
-        notesModels.add(new NoteModel());
-        notesModels.add(new NoteModel());
-        notesModels.add(new NoteModel());
-        notesModels.add(new NoteModel());
     }
 
     @OnClick(R.id.add_note)
     public void onViewClicked() {
         Utils.clickEffect(addNote);
         Intent addNote = new Intent(this, AddNote.class);
+        addNote.putExtra("model", userModel);
         startActivity(addNote);
     }
 }

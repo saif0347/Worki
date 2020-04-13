@@ -10,10 +10,17 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.app.worki.R;
+import com.app.worki.UserProfile;
 import com.app.worki.model.NoteModel;
+import com.app.worki.util.FirestoreUtil;
+import com.app.worki.util.LogUtil;
 import com.app.worki.util.PopupUtil;
+import com.bumptech.glide.load.resource.file.FileResource;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,6 +65,10 @@ public class NotesAdapter extends BaseAdapter {
         }
 
         NoteModel model = mList.get(position);
+        viewHolder.note.setText(model.getNote());
+        Date date = new Date();
+        date.setTime(Long.parseLong(model.getTime()));
+        viewHolder.date.setText(new SimpleDateFormat("HH:mm dd MMM").format(date));
 
         // set views data here
         viewHolder.delete.setOnClickListener(new View.OnClickListener() {
@@ -67,6 +78,16 @@ public class NotesAdapter extends BaseAdapter {
                     @Override
                     public void positive(DialogInterface dialog) {
                         dialog.dismiss();
+                        FirestoreUtil.deleteDocument(FirestoreUtil.notes, model.getId(), new FirestoreUtil.DeleteResult() {
+                            @Override
+                            public void success() {
+                                LogUtil.loge("deleted");
+                                ((UserProfile) mContext).loadNotes();
+                            }
+                            @Override
+                            public void fail(String error) {
+                            }
+                        });
                     }
                     @Override
                     public void negative(DialogInterface dialog) {
