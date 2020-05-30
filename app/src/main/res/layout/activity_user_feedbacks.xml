@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
     <TextView
         android:id="@+id/noresult"
         android:visibility="gone"
@@ -10,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:text="@string/no_messages"
+        android:text="@string/no_feedbacks"
         android:layout_centerInParent="true"/>
     <ListView
         android:divider="@null"
@@ -18,16 +17,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     </ListView>
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/feedback_" />
     <ProgressBar
         android:visibility="gone"
         android:layout_width="wrap_content"

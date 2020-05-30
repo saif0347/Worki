@@ -41,6 +41,7 @@ public class FirestoreUtil {
     public static final String users = "users";
     public static final String messages = "messages";
     public static final String notes = "notes";
+    public static final String feedbacks = "feedbacks";
 
     public interface FirebasePushToken{
         void pushToken(String token);

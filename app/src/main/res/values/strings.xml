@@ -2,7 +2,7 @@
     <string name="app_name">Worki</string>
     <string name="title_activity_admin_login">AdminLogin</string>
     <string name="home">Home</string>
-    <string name="username">Username</string>
+    <string name="username">Full Name</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="admin">Admin</string>
@@ -38,4 +38,12 @@
     <string name="message_templates">Message Templates</string>
     <string name="add_template">Add Template</string>
     <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="username2">Username</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="email">Email (optional)</string>
+    <string name="ideas">Ideas for improvement, complaints, feel free to tell us all about it</string>
+    <string name="feedback">Feedback</string>
+    <string name="feedbacks">Feedbacks</string>
+    <string name="no_feedbacks">No Feedbacks</string>
 </resources>

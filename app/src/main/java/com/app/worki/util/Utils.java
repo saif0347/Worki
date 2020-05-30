@@ -42,6 +42,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -468,6 +470,22 @@ public class Utils {
             return "" + (seconds / 2419200) + "M ago";
         } else {
             return "" + (seconds / 29030400) + "Y ago";
+        }
+    }
+
+    public static Date getOnlyFutureTime(Date todayTime, Date azanTime_){
+        Date azanTime = azanTime_;
+        long diff = azanTime.getTime() - todayTime.getTime();
+        if (diff < 0) {
+            // Next Day
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(azanTime);
+            calendar.add(Calendar.DATE, 1);
+            azanTime = calendar.getTime();
+            return azanTime;
+        } else {
+            // Today
+            return azanTime;
         }
     }
 }

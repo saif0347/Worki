@@ -64,5 +64,57 @@ public class PrefsUtil {
         return sp.getString(Photo, "");
     }
 
+    private static final String UserId = "UserId";
+    public static void setUserId(Context context, String s){
+        SharedPreferences sp = getSharedPrefs(context);
+        sp.edit().putString(UserId, s).apply();
+    }
+    public static String getUserId(Context context){
+        SharedPreferences sp = getSharedPrefs(context);
+        return sp.getString(UserId, "");
+    }
+
+    private static final String Lat = "Lat";
+    public static void setLat(Context context, String s){
+        SharedPreferences sp = getSharedPrefs(context);
+        sp.edit().putString(Lat, s).apply();
+    }
+    public static String getLat(Context context){
+        SharedPreferences sp = getSharedPrefs(context);
+        return sp.getString(Lat, "0");
+    }
+
+    private static final String Lng = "Lng";
+    public static void setLng(Context context, String s){
+        SharedPreferences sp = getSharedPrefs(context);
+        sp.edit().putString(Lng, s).apply();
+    }
+    public static String getLng(Context context){
+        SharedPreferences sp = getSharedPrefs(context);
+        return sp.getString(Lng, "0");
+    }
+
+    private static final String Radius = "Radius";
+    public static void setRadius(Context context, String s){
+        SharedPreferences sp = getSharedPrefs(context);
+        sp.edit().putString(Radius, s).apply();
+    }
+    public static String getRadius(Context context){
+        SharedPreferences sp = getSharedPrefs(context);
+        return sp.getString(Radius, "0");
+    }
+
+    private static final String Logs = "Logs";
+    public static void setLogs(Context context, String s){
+        SharedPreferences sp = getSharedPrefs(context);
+        String logs = getLogs(context);
+        logs = logs+"\n"+s;
+        sp.edit().putString(Logs, logs).apply();
+    }
+    public static String getLogs(Context context){
+        SharedPreferences sp = getSharedPrefs(context);
+        return sp.getString(Logs, "");
+    }
+
 
 }

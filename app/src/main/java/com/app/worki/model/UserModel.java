@@ -3,9 +3,25 @@ package com.app.worki.model;
 import java.io.Serializable;
 
 public class UserModel implements Serializable {
-    String type, username, token, date_added, photo;
+    String type, username, admin_name, token, date_added, photo, status_time;
     int status;
     String distance;
+
+    public String getAdmin_name() {
+        return admin_name;
+    }
+
+    public void setAdmin_name(String admin_name) {
+        this.admin_name = admin_name;
+    }
+
+    public String getStatus_time() {
+        return status_time;
+    }
+
+    public void setStatus_time(String status_time) {
+        this.status_time = status_time;
+    }
 
     public String getDistance() {
         return distance;

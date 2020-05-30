@@ -7,13 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-
 import com.app.worki.R;
 import com.app.worki.model.UserModel;
 import com.app.worki.util.FirebaseStorageUtil;
-
 import java.util.ArrayList;
-
+import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -61,25 +59,77 @@ public class UsersAdapter extends BaseAdapter {
 
         // set views data here
         viewHolder.name.setText(model.getUsername());
-        if(model.getStatus() == 1){
-            viewHolder.status.setText(mContext.getResources().getString(R.string.active));
-            viewHolder.status.setTextColor(mContext.getResources().getColor(R.color.green));
+
+        if(model.getStatus_time()!=null){
+            if(!model.getStatus_time().isEmpty()){
+                long time = Long.parseLong(model.getStatus_time());
+                Date date = new Date();
+                date.setTime(time);
+                long offset = System.currentTimeMillis() - date.getTime();
+                if(offset < 0)
+                    offset = 0;
+                if(offset/(1000*60*60) > 2){
+                    showInActive(viewHolder);
+                }
+                else{
+                    if(model.getStatus() == 1){
+                        showActive(viewHolder);
+                    }
+                    else{
+                        showInActive(viewHolder);
+                    }
+                }
+            }
+            else{
+                showInActive(viewHolder);
+            }
         }
         else{
-            viewHolder.status.setText(mContext.getResources().getString(R.string.inactive));
-            viewHolder.status.setTextColor(mContext.getResources().getColor(R.color.red));
+            showInActive(viewHolder);
         }
-        if(!model.getPhoto().isEmpty()) {
-            FirebaseStorageUtil.showImage((
-                    Activity) mContext,
+
+        loadPhoto(viewHolder, model);
+
+//        if(!model.getPhoto().isEmpty()) {
+//            LogUtil.loge("photo: "+position);
+//            viewHolder.photo.setImageBitmap(null);
+//            loadPhoto(viewHolder, model);
+//        }
+//        else{
+//            LogUtil.loge("no photo: "+position);
+//            viewHolder.photo.setImageBitmap(null);
+//            viewHolder.photo.setImageResource(R.drawable.profile);
+//            //viewHolder.photo.setImageDrawable(mContext.getResources().getDrawable(R.drawable.profile));
+//        }
+
+        return v;
+    }
+
+    private void showInActive(CompleteListViewHolder viewHolder) {
+        viewHolder.status.setText(mContext.getResources().getString(R.string.inactive));
+        viewHolder.status.setTextColor(mContext.getResources().getColor(R.color.red));
+    }
+
+    private void showActive(CompleteListViewHolder viewHolder) {
+        viewHolder.status.setText(mContext.getResources().getString(R.string.active));
+        viewHolder.status.setTextColor(mContext.getResources().getColor(R.color.green));
+    }
+
+    private void loadPhoto(CompleteListViewHolder viewHolder, UserModel model) {
+        if(!model.getPhoto().equals("photo.png")){
+            FirebaseStorageUtil.showImage(
+                    (Activity) mContext,
                     viewHolder.photo,
                     FirebaseStorageUtil.getStorageReference(new String[]{model.getUsername(), model.getPhoto()})
             );
         }
         else{
-            viewHolder.photo.setImageBitmap(null);
+            FirebaseStorageUtil.showImage(
+                    (Activity) mContext,
+                    viewHolder.photo,
+                    FirebaseStorageUtil.getStorageReference(new String[]{model.getPhoto()})
+            );
         }
-        return v;
     }
 
     static class CompleteListViewHolder {

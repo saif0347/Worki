@@ -6,16 +6,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import com.app.worki.model.TemplateModel;
-import com.app.worki.model.UserModel;
 import com.app.worki.util.FirestoreUtil;
 import com.app.worki.util.Utils;
 import com.google.firebase.firestore.DocumentReference;
-
 import java.util.HashMap;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -27,6 +23,8 @@ public class AddTemplate extends AppCompatActivity {
     Button addNote;
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
+    @BindView(R.id.title)
+    EditText title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +36,10 @@ public class AddTemplate extends AppCompatActivity {
     @OnClick(R.id.addNote)
     public void onViewClicked() {
         Utils.clickEffect(addNote);
+        if(title.getText().toString().isEmpty()){
+            title.setError("Required");
+            return;
+        }
         if (message.getText().toString().isEmpty()) {
             message.setError("Required");
             return;
@@ -46,6 +48,7 @@ public class AddTemplate extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
         TemplateModel model = new TemplateModel();
         model.setId("");
+        model.setTitle(Utils.txt(title));
         model.setText(Utils.txt(message));
         FirestoreUtil.addDoc(model, FirestoreUtil.templates, new FirestoreUtil.AddDocResult() {
             @Override

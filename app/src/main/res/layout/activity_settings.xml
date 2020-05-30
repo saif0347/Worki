@@ -20,7 +20,7 @@
                 android:gravity="top"
                 android:hint="@string/lat"
                 android:background="@drawable/field"
-                android:inputType="numberDecimal"/>
+                android:inputType="text"/>
             <EditText
                 android:layout_marginTop="10dp"
                 android:id="@+id/lng"
@@ -31,7 +31,7 @@
                 android:textSize="14sp"
                 android:hint="@string/lng"
                 android:background="@drawable/field"
-                android:inputType="numberDecimal"/>
+                android:inputType="text"/>
             <EditText
                 android:layout_marginTop="10dp"
                 android:id="@+id/radius"

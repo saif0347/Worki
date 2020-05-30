@@ -3,8 +3,6 @@ package com.app.worki;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -16,6 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.app.worki.adapter.UsersAdapter;
 import com.app.worki.model.UserModel;
 import com.app.worki.util.FirestoreUtil;
+import com.app.worki.util.LogUtil;
 import com.app.worki.util.PrefsUtil;
 import com.app.worki.util.Utils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -44,6 +43,8 @@ public class AdminHome extends AppCompatActivity {
     ImageView settings;
     @BindView(R.id.logout)
     ImageView logout;
+    @BindView(R.id.feedback)
+    ImageView feedback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,32 +57,29 @@ public class AdminHome extends AppCompatActivity {
     }
 
     private void setClickListeners() {
-        settings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Utils.clickEffect(v);
-                Intent settings = new Intent(AdminHome.this, Settings.class);
-                startActivity(settings);
-            }
+        feedback.setOnClickListener(v -> {
+            Utils.clickEffect(v);
+            Intent feedback = new Intent(AdminHome.this, UserFeedbacks.class);
+            startActivity(feedback);
         });
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Utils.clickEffect(v);
-                PrefsUtil.setLogin(AdminHome.this, false);
-                PrefsUtil.setUserType(AdminHome.this, "");
-                PrefsUtil.setUsername(AdminHome.this, "");
-                finishAffinity();
-                Intent login = new Intent(AdminHome.this, Login.class);
-                startActivity(login);
-            }
+        settings.setOnClickListener(v -> {
+            Utils.clickEffect(v);
+            Intent settings = new Intent(AdminHome.this, Settings.class);
+            startActivity(settings);
         });
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent sendMsg = new Intent(AdminHome.this, SendMessage.class);
-                startActivity(sendMsg);
-            }
+        logout.setOnClickListener(v -> {
+            Utils.clickEffect(v);
+            PrefsUtil.setLogin(AdminHome.this, false);
+            PrefsUtil.setUserType(AdminHome.this, "");
+            PrefsUtil.setUsername(AdminHome.this, "");
+            PrefsUtil.setUserId(AdminHome.this, "");
+            finishAffinity();
+            Intent login = new Intent(AdminHome.this, Login.class);
+            startActivity(login);
+        });
+        fab.setOnClickListener(view -> {
+            Intent sendMsg = new Intent(AdminHome.this, SendMessage.class);
+            startActivity(sendMsg);
         });
     }
 
@@ -92,31 +90,33 @@ public class AdminHome extends AppCompatActivity {
     }
 
     private void loadData() {
+        LogUtil.loge("loadData");
         progressBar.setVisibility(View.VISIBLE);
         FirestoreUtil.getDocs(FirestoreUtil.users, new FirestoreUtil.LoadResultDocs() {
             @Override
             public void success(QuerySnapshot querySnapshot) {
+                LogUtil.loge("users: " + querySnapshot.size());
                 progressBar.setVisibility(View.GONE);
                 models.clear();
                 for (QueryDocumentSnapshot snapshot : querySnapshot) {
                     UserModel model = snapshot.toObject(UserModel.class);
                     models.add(model);
                 }
-                if(models.size() == 0)
+                if (models.size() == 0)
                     noresult.setVisibility(View.VISIBLE);
                 else
                     noresult.setVisibility(View.GONE);
+
                 usersAdapter = new UsersAdapter(AdminHome.this, models);
                 listView.setAdapter(usersAdapter);
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Intent profile = new Intent(AdminHome.this, UserProfile.class);
-                        profile.putExtra("model", models.get(position));
-                        startActivity(profile);
-                    }
+
+                listView.setOnItemClickListener((parent, view, position, id) -> {
+                    Intent profile = new Intent(AdminHome.this, UserProfile.class);
+                    profile.putExtra("model", models.get(position));
+                    startActivity(profile);
                 });
             }
+
             @Override
             public void error(String error) {
                 progressBar.setVisibility(View.GONE);

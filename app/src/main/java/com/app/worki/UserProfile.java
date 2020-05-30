@@ -17,7 +17,6 @@ import com.app.worki.model.NoteModel;
 import com.app.worki.model.UserModel;
 import com.app.worki.util.FirebaseStorageUtil;
 import com.app.worki.util.FirestoreUtil;
-import com.app.worki.util.PrefsUtil;
 import com.app.worki.util.Utils;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -54,6 +53,10 @@ public class UserProfile extends AppCompatActivity {
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
     int selection = 0;
+    @BindView(R.id.edit)
+    Button edit;
+    @BindView(R.id.admin_name)
+    TextView adminName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,13 @@ public class UserProfile extends AppCompatActivity {
         ButterKnife.bind(this);
 
         userModel = (UserModel) getIntent().getSerializableExtra("model");
+
+        edit.setOnClickListener(v -> {
+            Utils.clickEffect(v);
+            Intent edit = new Intent(UserProfile.this, EditProfile.class);
+            edit.putExtra("model", userModel);
+            startActivity(edit);
+        });
 
         messages.setOnClickListener(v -> setSelection(0));
         notes.setOnClickListener(v -> setSelection(1));
@@ -82,6 +92,14 @@ public class UserProfile extends AppCompatActivity {
 
     public void loadData() {
         name.setText(userModel.getUsername());
+        if(!userModel.getAdmin_name().isEmpty()){
+            adminName.setVisibility(View.VISIBLE);
+            adminName.setText(userModel.getAdmin_name());
+        }
+        else{
+            adminName.setVisibility(View.GONE);
+        }
+
         if (userModel.getStatus() == 1) {
             status.setText(getResources().getString(R.string.active));
             status.setTextColor(getResources().getColor(R.color.green));
@@ -89,8 +107,32 @@ public class UserProfile extends AppCompatActivity {
             status.setText(getResources().getString(R.string.inactive));
             status.setTextColor(getResources().getColor(R.color.red));
         }
-        if (!userModel.getPhoto().isEmpty())
+        if (!userModel.getPhoto().equals("photo.png"))
             FirebaseStorageUtil.showImage(this, photo, FirebaseStorageUtil.getStorageReference(new String[]{userModel.getUsername(), userModel.getPhoto()}));
+
+        // refresh
+        // find user
+        FirestoreUtil.getDocsFiltered(FirestoreUtil.users, "username", userModel.getUsername(), new FirestoreUtil.LoadResultDocs() {
+            @Override
+            public void success(QuerySnapshot querySnapshot) {
+                for (QueryDocumentSnapshot snapshot : querySnapshot) {
+                    UserModel userModel = snapshot.toObject(UserModel.class);
+                    if(!userModel.getAdmin_name().isEmpty()){
+                        adminName.setVisibility(View.VISIBLE);
+                        adminName.setText(userModel.getAdmin_name());
+                    }
+                    else{
+                        adminName.setVisibility(View.GONE);
+                    }
+                    if (!userModel.getPhoto().equals("photo.png"))
+                        FirebaseStorageUtil.showImage(UserProfile.this, photo, FirebaseStorageUtil.getStorageReference(new String[]{userModel.getUsername(), userModel.getPhoto()}));
+                }
+            }
+
+            @Override
+            public void error(String error) {
+            }
+        });
     }
 
     private void setSelection(int position) {
@@ -116,7 +158,7 @@ public class UserProfile extends AppCompatActivity {
 
     private void loadMessages() {
         progressBar.setVisibility(View.VISIBLE);
-        if(messagesAdapter != null)
+        if (messagesAdapter != null)
             listView.setAdapter(messagesAdapter);
         FirestoreUtil.getDocsFilteredDesc(FirestoreUtil.messages, "username", userModel.getUsername(), "time", new FirestoreUtil.LoadResultDocs() {
             @Override
@@ -129,6 +171,13 @@ public class UserProfile extends AppCompatActivity {
                 }
                 messagesAdapter = new MessagesAdapter(UserProfile.this, messageModels);
                 listView.setAdapter(messagesAdapter);
+                listView.setOnItemClickListener((parent, view, position, id) -> {
+                    if (selection != 0)
+                        return;
+                    Intent msgInfo = new Intent(UserProfile.this, MessageDetails.class);
+                    msgInfo.putExtra("model", messageModels.get(position));
+                    startActivity(msgInfo);
+                });
             }
 
             @Override
@@ -140,7 +189,7 @@ public class UserProfile extends AppCompatActivity {
 
     public void loadNotes() {
         progressBar.setVisibility(View.VISIBLE);
-        if(notesAdapter != null)
+        if (notesAdapter != null)
             listView.setAdapter(notesAdapter);
         FirestoreUtil.getDocsFilteredDesc(FirestoreUtil.notes, "username", userModel.getUsername(), "time", new FirestoreUtil.LoadResultDocs() {
             @Override
@@ -153,6 +202,7 @@ public class UserProfile extends AppCompatActivity {
                 }
                 notesAdapter = new NotesAdapter(UserProfile.this, notesModels);
                 listView.setAdapter(notesAdapter);
+                listView.setOnItemClickListener(null);
             }
 
             @Override

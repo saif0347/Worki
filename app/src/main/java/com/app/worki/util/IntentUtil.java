@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.StrictMode;
-import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 import java.io.File;
@@ -28,8 +27,10 @@ public class IntentUtil {
     }
 
     public static void openUrlInBrowser(Context context, String url){
-        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        context.startActivity(i);
+        if(url.startsWith("http")){
+            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            context.startActivity(i);
+        }
     }
 
     public static void openUrlInChrome(Activity activity, String url){
@@ -38,7 +39,8 @@ public class IntentUtil {
         intent.setPackage("com.android.chrome");
         try {
             activity.startActivity(intent);
-        } catch (ActivityNotFoundException ex) {
+        }
+        catch (ActivityNotFoundException ex) {
             // Chrome browser presumably not installed so allow user to choose instead
             intent.setPackage(null);
             activity.startActivity(intent);

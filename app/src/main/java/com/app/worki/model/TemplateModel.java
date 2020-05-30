@@ -1,7 +1,15 @@
 package com.app.worki.model;
 
 public class TemplateModel {
-    String id, text;
+    String id, title, text;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public String getId() {
         return id;

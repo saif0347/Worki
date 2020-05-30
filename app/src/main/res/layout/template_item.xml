@@ -9,14 +9,25 @@
         android:padding="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <TextView
-            android:id="@+id/template"
-            android:layout_weight="8"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="this is note this is note this is note this is note this is note"
-            android:textColor="@color/black"
-            android:textSize="16sp"/>
+            android:layout_weight="8"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="this is sfs"
+                android:textColor="@color/black"
+                android:textSize="16sp"/>
+            <TextView
+                android:id="@+id/template"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="this is note this is note this is note this is note this is note"
+                android:textSize="14sp"/>
+        </LinearLayout>
         <TextView
             android:id="@+id/delete"
             android:gravity="center"

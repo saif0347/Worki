@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -16,9 +17,28 @@
         android:allowBackup="true"
         android:icon="@drawable/worki"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@drawable/worki"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".FeedbackDetails"
+            android:label="@string/feedback"
+            android:parentActivityName=".Login" />
+        <activity
+            android:name=".UserFeedbacks"
+            android:label="@string/feedbacks"
+            android:parentActivityName=".Login" />
+        <activity
+            android:name=".Feedback"
+            android:label="@string/contact_us"
+            android:parentActivityName=".Login" />
+        <activity
+            android:name=".Transparent"
+            android:showOnLockScreen="true"
+            android:showWhenLocked="true"
+            android:theme="@style/Transparent"
+            android:turnScreenOn="true" />
         <activity
             android:name=".AddTemplate"
             android:label="@string/add_template"
@@ -89,7 +109,6 @@
         <service
             android:name=".service.MyIntentService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
     </application>
 
 </manifest>

@@ -1,12 +1,20 @@
 package com.app.worki;
 
-import android.app.Application;
 import android.content.Context;
 import android.os.Build;
 import android.os.StrictMode;
+
+import androidx.multidex.MultiDexApplication;
+
+import org.acra.ACRA;
+import org.acra.annotation.AcraMailSender;
+
 import java.lang.reflect.Method;
 
-public class MyApp extends Application {
+@AcraMailSender(
+        mailTo = "saif052m@gmail.com"
+)
+public class MyApp extends MultiDexApplication {
     public static Context context;
 
     public static Context getContext() {
@@ -26,5 +34,11 @@ public class MyApp extends Application {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        ACRA.init(this);
     }
 }

@@ -104,15 +104,13 @@ public class SendMessage extends AppCompatActivity {
                 for (QueryDocumentSnapshot snapshot : querySnapshot) {
                     TemplateModel model = snapshot.toObject(TemplateModel.class);
                     templateModels.add(model);
-                    templates[i] = model.getText();
+                    templates[i] = model.getTitle();
                     i++;
                 }
                 Utils.setSpinnerData(SendMessage.this, selMessage, templates);
-                selMessage.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        message.setText(templates[position]);
-                    }
+                selMessage.setOnItemClickListener((parent, view, position, id) -> {
+                    title.setText(templateModels.get(position).getTitle());
+                    message.setText(templateModels.get(position).getText());
                 });
             }
             @Override
@@ -173,9 +171,15 @@ public class SendMessage extends AppCompatActivity {
     }
 
     private void sendNotification(UserModel model, MessageModel messageModel) {
+        Toast.makeText(SendMessage.this, "Message Sent!", Toast.LENGTH_SHORT).show();
+        selUser.setText("");
+        selMessage.setText("");
+        title.setText("");
+        message.setText("");
+        url.setText("");
+
         JSONArray tokens = new JSONArray();
         tokens.put(model.getToken());
-
         JSONObject data = new JSONObject();
         try {
             data.put("title", messageModel.getTitle());
@@ -187,12 +191,6 @@ public class SendMessage extends AppCompatActivity {
             @Override
             public void success() {
                 LogUtil.loge("push sent");
-                Toast.makeText(SendMessage.this, "Message Sent!", Toast.LENGTH_SHORT).show();
-                selUser.setText("");
-                selMessage.setText("");
-                title.setText("");
-                message.setText("");
-                url.setText("");
             }
             @Override
             public void fail(String message) {

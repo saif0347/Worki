@@ -60,6 +60,7 @@ public class TemplatesAdapter extends BaseAdapter {
         }
 
         TemplateModel model = mList.get(position);
+        viewHolder.title.setText(model.getTitle());
         viewHolder.template.setText(model.getText());
 
         // set views data here
@@ -98,6 +99,8 @@ public class TemplatesAdapter extends BaseAdapter {
         TextView delete;
         @BindView(R.id.template)
         TextView template;
+        @BindView(R.id.title)
+        TextView title;
         public CompleteListViewHolder(View base) {
             //initialize views here
             ButterKnife.bind(this, base);

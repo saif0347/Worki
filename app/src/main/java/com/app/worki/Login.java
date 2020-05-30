@@ -82,11 +82,11 @@ public class Login extends AppCompatActivity {
 
     private void loginUser() {
         if(username.getText().toString().isEmpty()){
-            username.setError("Required");
+            username.setError("Full name Required");
             return;
         }
         if(!ValidUtil.checkTextOnly(Utils.txt(username))){
-            username.setError("Invalid name");
+            username.setError("Invalid full name");
             return;
         }
         progressBar.setVisibility(View.VISIBLE);
@@ -98,10 +98,12 @@ public class Login extends AppCompatActivity {
                     UserModel userModel = new UserModel();
                     userModel.setType("user");
                     userModel.setUsername(Utils.txt(username).toLowerCase());
-                    userModel.setPhoto("");
+                    userModel.setAdmin_name("");
+                    userModel.setPhoto("photo.png");
                     userModel.setToken(pushToken);
                     userModel.setDate_added(""+System.currentTimeMillis());
                     userModel.setStatus(0);
+                    userModel.setStatus_time("");
                     FirestoreUtil.addDoc(userModel, FirestoreUtil.users, new FirestoreUtil.AddDocResult() {
                         @Override
                         public void success(DocumentReference docRef) {
@@ -134,6 +136,7 @@ public class Login extends AppCompatActivity {
     }
 
     private void updateToken(DocumentReference reference) {
+        PrefsUtil.setUserId(this, reference.getId());
         LogUtil.loge("update token");
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("token", pushToken);

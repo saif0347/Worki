@@ -17,7 +17,7 @@
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/photo"
             android:layout_width="150dp"
-            android:background="@drawable/profile"
+            android:background="@drawable/photo"
             android:layout_height="150dp"/>
         <Button
             android:id="@+id/browse"
@@ -55,6 +55,20 @@
                 android:layout_height="wrap_content"
                 android:text="@string/loading" />
         </LinearLayout>
+        <EditText
+            android:layout_marginTop="15dp"
+            android:id="@+id/admin_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
+            android:hint="@string/username"
+            android:textSize="14sp"
+            android:background="@drawable/field"
+            android:inputType="text"/>
         <Button
             android:id="@+id/update"
             android:textAllCaps="false"
